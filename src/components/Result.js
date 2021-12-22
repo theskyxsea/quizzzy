@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function Result(props) {
   const retrive = () => {
@@ -6,6 +7,7 @@ function Result(props) {
     return maintain;
   };
   let maintain = retrive();
+
   useEffect(() => {
     if (!props.id) {
       props.setid(maintain[0]);
@@ -15,25 +17,31 @@ function Result(props) {
       props.setscore(maintain[4]);
       //props.setqno(maintain[5]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     return () => {
-      props.store();
+      localStorage.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div>
       <div>
         <h2>you are {props.score >= props.outof / 2 ? "passed" : "failed"}</h2>
-        <h3>
-          with {props.score} marks out of {props.outof} questions
-        </h3>
         <h2>
-          which means you submitted {props.outof - props.score} wrong answers
+          with {props.score > props.outof ? props.outof : props.score} marks out
+          of {props.outof} questions
         </h2>
+        <br />
+        <h4>
+          which means you submitted
+          {` ${
+            props.outof - props.score >= 0 ? props.outof - props.score : 0
+          } `}
+          wrong answers
+        </h4>
+        <Link to={"/"}>
+          <button>Home</button>
+        </Link>
       </div>
     </div>
   );

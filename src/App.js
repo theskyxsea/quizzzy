@@ -18,10 +18,23 @@ function App() {
   const [answers, setanswers] = useState([]);
   const [score, setscore] = useState(0);
   const [qno, setqno] = useState();
+
+  useEffect(() => {
+    return () => {
+      localStorage.clear();
+      setid();
+      setques({});
+      setname("");
+      setanswers([]);
+      setscore(0);
+      store();
+    };
+  }, []);
+
   useEffect(() => {
     store();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [score, answers, qno, name, ques, id]);
+  }, [score, answers, name, ques, id]);
   // useEffect(() => {
   //   setid(0);
   //   setques({});
@@ -35,10 +48,10 @@ function App() {
     let maintain = [id, ques, name, answers, score, qno];
     window.localStorage.setItem("state", JSON.stringify(maintain));
   };
-  const retrive = () => {
-    let maintain = JSON.parse(window.localStorage.getItem("state"));
-    return maintain;
-  };
+  // const retrive = () => {
+  //   let maintain = JSON.parse(window.localStorage.getItem("state"));
+  //   return maintain;
+  // };
 
   return (
     <div className='App'>

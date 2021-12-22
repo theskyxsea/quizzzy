@@ -7,7 +7,6 @@ function Test(props) {
   const [thisanswer, setthisanswer] = useState();
   const [ansarre, setansarre] = useState([]);
   const [thiskey, setthiskey] = useState();
-  //const questions = props.ques ? props.ques : maintain[1];
 
   function retrive() {
     let maintain = JSON.parse(window.localStorage.getItem("state"));
@@ -16,7 +15,6 @@ function Test(props) {
   let maintain = retrive();
 
   useEffect(() => {
-    //console.log(questions);
     if (!props.id) {
       props.setid(maintain[0]);
       props.setques(maintain[1]);
@@ -58,11 +56,20 @@ function Test(props) {
       props.setscore((prevscore) => prevscore + 1);
     }
   };
+
   const finalize = () => {
     let answer = questions[props.qno].type ? ansarre : thisanswer;
-    props.setanswers((prevanswer) => [...prevanswer, { thiskey, answer }]);
-    result(questions[props.qno].correctOptionIndex, answer);
-    props.store();
+    if (
+      props.answers[props.qno] !== undefined &&
+      questions[props.qno]._id === props.answers[props.qno].thiskey
+    ) {
+      if (props.answers[props.qno].answers !== answer) {
+        props.answers[props.qno] = { thiskey, answer };
+      }
+    } else {
+      props.setanswers((prevanswer) => [...prevanswer, { thiskey, answer }]);
+      result(questions[props.qno].correctOptionIndex, answer);
+    }
   };
 
   const nextHandler = () => {
@@ -76,32 +83,28 @@ function Test(props) {
     if (props.qno < 0) return;
     if (!questions) return;
     props.setqno((prevqno) => prevqno - 1);
-    finalize();
+    //finalize();
   };
 
   function handleClick(answerh, key) {
     questions[props.qno].type
       ? setansarre((prevansarre) => [...prevansarre, answerh])
       : setthisanswer(answerh);
+    //console.log(key);
     setthiskey(key);
   }
 
-  useEffect(() => {
-    //console.log(props.answers[props.qno].answer)
-    //isthere();
-  }, [props.qno]);
-
   const options = () => {
     if (!questions) return;
-    //console.log(questions);
     let qnos = props.qno === undefined ? maintain[5] : props.qno;
-    //var status = isthere() ? "ckecked" : null;
-    // if (isthere()) {
-    //   status = true;
-    // } else {
-    //   status = false;
-    // }
-    //console.log(qnos);
+    let checked = null;
+    if (
+      props.answers[qnos] !== undefined &&
+      questions[qnos]._id === props.answers[props.qno].thiskey
+    ) {
+      checked =
+        props.answers[qnos] !== undefined ? props.answers[qnos].answer : null;
+    }
     let opt = [];
     for (let i = 0; i < questions[qnos].options.length; i++) {
       opt.push(
@@ -111,8 +114,8 @@ function Test(props) {
             id={questions[qnos].options[i]}
             name='answer'
             value={true}
-            //status
-            onClick={() => handleClick(i, questions[qnos]._id)}
+            onChange={() => handleClick(i, questions[qnos]._id)}
+            checked={i === checked ? true : null}
           />
           <label htmlFor={questions[qnos].options[i]}>
             {questions[qnos].options[i]}
