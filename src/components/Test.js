@@ -1,37 +1,32 @@
 import React, { useState, useEffect } from "react";
-//import Result from "./Result";
+
 import { Link } from "react-router-dom";
 
 function Test(props) {
-  //console.log(typeof props.ques);
-  const questions = props.ques;
-  //const [props.qno, props.setqno] = useState(0);
+  const questions = props.ques.length >= 1 ? props.ques : retrive()[1];
   const [thisanswer, setthisanswer] = useState();
   const [ansarre, setansarre] = useState([]);
   const [thiskey, setthiskey] = useState();
-  let maintain = JSON.parse(window.localStorage.getItem("state"));
-  //console.log(props.ques[props.qno].questionText);
+  //const questions = props.ques ? props.ques : maintain[1];
+
+  function retrive() {
+    let maintain = JSON.parse(window.localStorage.getItem("state"));
+    return maintain;
+  }
+  let maintain = retrive();
 
   useEffect(() => {
-    console.log(maintain);
-
-    // [id, ques, name, answers, score, qno]
-    // const index = props.answers.indexOf(questions[props.qno]._id);
-    // if (index > -1) {
-    //   props.answers.splice(index, 1);
-    //   console.log(props.answers);
-    // }
-    //console.log(props.answers[0].thiskey);
     //console.log(questions);
-    //console.log(questions.length);
+    if (!props.id) {
+      props.setid(maintain[0]);
+      props.setques(maintain[1]);
+      props.setname(maintain[2]);
+      props.setanswers(maintain[3]);
+      props.setscore(maintain[4]);
+      props.setqno(maintain[5]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.qno]);
-
-  useEffect(() => {
-    //console.log(props.answers);
-    //answerCheck();
-    //if (questions[0]) console.log(props.answer[props.qno].thisanswer.length);
-  }, [props.answers]);
+  }, []);
 
   const result = (correctans, answer) => {
     for (let i = 0; i < props.answers.length; i++) {
@@ -56,70 +51,79 @@ function Test(props) {
         }
       }
       if (count === correctans.length) {
-        //console.log(true);
         props.setscore((prevscore) => prevscore + 1);
       }
     }
     if (correctans === answer) {
-      //console.log(true);
       props.setscore((prevscore) => prevscore + 1);
     }
   };
   const finalize = () => {
-    //if (props.qno >= questions.length - 1) return;
-    if (!questions) return;
     let answer = questions[props.qno].type ? ansarre : thisanswer;
     props.setanswers((prevanswer) => [...prevanswer, { thiskey, answer }]);
     result(questions[props.qno].correctOptionIndex, answer);
-    //console.log("Done");
+    props.store();
   };
 
   const nextHandler = () => {
-    if (props.qno > questions.length - 1) return;
+    if (props.qno > questions.length - 2) return;
     if (!questions) return;
     props.setqno((prevqno) => prevqno + 1);
     finalize();
   };
 
   const backhandler = () => {
-    if (props.qno === 0) return;
+    if (props.qno < 0) return;
     if (!questions) return;
     props.setqno((prevqno) => prevqno - 1);
     finalize();
   };
 
   function handleClick(answerh, key) {
-    //console.log(i);
     questions[props.qno].type
       ? setansarre((prevansarre) => [...prevansarre, answerh])
       : setthisanswer(answerh);
     setthiskey(key);
   }
 
+  useEffect(() => {
+    //console.log(props.answers[props.qno].answer)
+    //isthere();
+  }, [props.qno]);
+
   const options = () => {
+    if (!questions) return;
+    //console.log(questions);
+    let qnos = props.qno === undefined ? maintain[5] : props.qno;
+    //var status = isthere() ? "ckecked" : null;
+    // if (isthere()) {
+    //   status = true;
+    // } else {
+    //   status = false;
+    // }
+    //console.log(qnos);
     let opt = [];
-    for (let i = 0; i < questions[props.qno].options.length; i++) {
+    for (let i = 0; i < questions[qnos].options.length; i++) {
       opt.push(
-        <div key={questions[props.qno].options[i]}>
+        <div key={questions[qnos].options[i]}>
           <input
-            type={questions[props.qno].type ? "checkbox" : "radio"}
-            id={questions[props.qno].options[i]}
+            type={questions[qnos].type ? "checkbox" : "radio"}
+            id={questions[qnos].options[i]}
             name='answer'
-            // value={questions[props.qno].options[i]}
             value={true}
-            onClick={() => handleClick(i, questions[props.qno]._id)}
+            //status
+            onClick={() => handleClick(i, questions[qnos]._id)}
           />
-          <label htmlFor={questions[props.qno].options[i]}>
-            {questions[props.qno].options[i]}
+          <label htmlFor={questions[qnos].options[i]}>
+            {questions[qnos].options[i]}
           </label>
         </div>
       );
     }
     return opt;
   };
-  //let nom = props.qno + 1;
 
-  return (
+  return questions ? (
     <React.Fragment>
       <div>
         <h2 className='App-header'>welcome to test</h2>
@@ -138,18 +142,19 @@ function Test(props) {
         </div>
         <div className='btnHolder'>
           <div>
-            <Link to={`/Test/${props.qno - 1}`}>
-              <button
-                className='btn1'
-                onClick={() => {
-                  backhandler();
-                }}>
-                {questions[props.qno] === questions.length - 3
-                  ? "finish"
-                  : "Back"}
-              </button>
-            </Link>
-            {/* <div>{questions[props.qno] ? questions[props.qno].correctOptionIndex : null}</div> */}
+            {props.qno !== 0 ? (
+              <Link to={`/Test/${props.qno - 1}`}>
+                <button
+                  className='btn1'
+                  onClick={() => {
+                    backhandler();
+                  }}>
+                  {questions[props.qno] === questions.length - 3
+                    ? "finish"
+                    : "Back"}
+                </button>
+              </Link>
+            ) : null}
             {props.qno < questions.length - 1 ? (
               <Link to={`/Test/${props.qno + 1}`}>
                 <button
@@ -176,7 +181,7 @@ function Test(props) {
         </div>
       </div>
     </React.Fragment>
-  );
+  ) : null;
 }
 
 export default Test;

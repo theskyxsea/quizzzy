@@ -1,27 +1,87 @@
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+table {
+  list-style: none;
+  text-align: left;
+  font-size: 25px;
+  border: solid black 2px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.formm {
+  margin-left: 15px;
+  margin-right: 15px;
+  border: grey solid 1px;
+  border-radius: 5px;
+  padding: 5px;
+}
+.question {
+  padding: 1px;
+  padding-left: 10px;
+  text-align: left;
+}
+.options {
+  text-align: left;
+}
+.count {
+  text-align: center;
+}
+.btn {
+  background-color: rgb(240, 77, 77);
+  height: 5vh;
+  font-weight: bold;
+  border-radius: 5px;
+  margin: 2px 5px;
+}
+.btnHolder {
+  margin-right: 15px;
+  margin-left: 15px;
+  background-color: grey;
+  padding: 5px;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.btn1 {
+  background-color: rgb(86, 179, 86);
+  height: 5vh;
+  font-weight: bold;
+  border-radius: 5px;
+  margin: 2px 5px;
+}
+.btn1:hover {
+  background-color: black;
+  color: green;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.btn:hover {
+  background-color: black;
+  color: red;
+}
+
+tr {
+  padding: 0%;
+}
+
+th {
+  font-size: calc(18px + 2vmin);
+  text-align: center;
+  background-color: coral;
+  padding: 05px;
+  font-weight: bold;
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(25px + 2vmin);
   color: white;
+  margin-top: 0%;
+  padding: 1%;
 }
 
 .App-link {

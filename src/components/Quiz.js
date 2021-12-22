@@ -4,30 +4,30 @@ import { Link } from "react-router-dom";
 
 function Quiz(props) {
   const [data, setdata] = useState([]);
-
+  localStorage.clear();
   useEffect(() => {
-    props.setstart(false);
     axios
       .get("http://interviewapi.stgbuild.com/getQuizData")
       .then((response) => {
         setdata(response.data);
       })
-      .then((error) => {
+      .catch((error) => {
         console.log(error);
       });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  //console.log(data);
+
   let array = data.tests;
-  console.log(array);
+  //console.log(array);
   const clickHandler = (i, j, k) => {
-    // console.log(i);
-    // console.log(j);
-    if (props.start) return;
+    //console.log(i);
     props.setid(i);
     props.setques(j);
     props.setname(k);
-    props.setstart(true);
+    props.setqno(0);
+
+    //console.log("clickHandler");
   };
 
   const titleList = () => {
@@ -37,9 +37,9 @@ function Quiz(props) {
         <tr key={array ? array[i]._id : null}>
           {/* <td>{array ? array[i]._id : null}</td> */}
           <td>{array ? array[i].name : null}</td>
-          <td>{array ? array[i].questions.length : null}</td>
+          <td className='count'>{array ? array[i].questions.length : null}</td>
           <td>
-            <Link to='/Test'>
+            <Link to='/Test/0'>
               <button
                 onClick={() => {
                   clickHandler(array[i]._id, array[i].questions, array[i].name);
@@ -56,18 +56,20 @@ function Quiz(props) {
 
   return (
     <div>
-      The Quiz App
-      <table>
-        <tbody>
-          <tr>
-            <th id='key'>Test Key</th>
-            <th id='name'>Test Name</th>
-            <th id='qty'>No of Questions</th>
-            <th id='button'></th>
-          </tr>
-          {array ? titleList() : null}
-        </tbody>
-      </table>
+      <h2 className='App-header'>THE QUIZ APP</h2>
+      <div className='tableholder'>
+        <table>
+          <tbody>
+            <tr>
+              {/* <th id='key'>Test Key</th> */}
+              <th id='name'>Test Name</th>
+              <th id='qty'>No of Questions</th>
+              <th id='button'></th>
+            </tr>
+            {array ? titleList() : null}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
