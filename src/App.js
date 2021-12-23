@@ -20,6 +20,7 @@ function App() {
   const [qno, setqno] = useState();
 
   useEffect(() => {
+    document.title = "Interview Portal";
     return () => {
       localStorage.clear();
       setid();
@@ -29,6 +30,7 @@ function App() {
       setscore(0);
       store();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
